@@ -1,4 +1,5 @@
 // Define currentDay - moment.js
+/*
 var currentDay = moment().format("dddd, MMMM Do");
 
 // Display currentDay
@@ -32,6 +33,48 @@ $.each(timeblocks, function (index, value) {
   $(".container").append("<div class='row'><div class='col-2 hour text-right' id='hour" +
       (index + 9) + "'><span>" + value.format("h A") + "</span></div><div class='col-8 event-group' id='timeblock" +
       (index + 9) + "'><textarea class='events col-12' id='eventblock" + (index + 9) + "'>" + events[index] + "</textarea></div>" +
-      "<i class='fas fa-save' title='Save Event'></i> </i></div></div></div>");
-});
 
+      "<button type='submit' id='savebtn'><i class='fas fa-save' title='Save Event'></i></button> </div></div></div>");
+});
+/* use dom traversing */
+
+
+var hourArray = [9,10,11,12,13,14,15,16,17];
+hourArray.forEach(function(hour) {
+  var momenthour=moment().hour()
+  console.log(momenthour)
+
+  var colorClass = ""
+
+  if (momenthour > hour) {
+    colorClass = "past"
+  }
+  else if (momenthour === hour) {
+    colorClass = "present"
+  }
+  else {
+    colorClass = "future"
+  }
+
+  $(".container").append(`<div class="row ${colorClass}" id="hour-${hour}">
+  <div class="hour col-1">${hour}</div>
+  <textarea class="description col-10"></textarea>
+  <button class="savebtn col-1">save</button>
+
+</div>
+`)
+})
+
+
+var saveButton=$(".savebtn");
+saveButton.on("click",function() {
+  var activity = $(this).siblings('.description').val() //retrieves value
+  var key=$(this).parent().attr('id') //getter - setter methods
+
+  localStorage.setItem(key,activity)
+  //console.log(key);
+
+})
+hourArray.forEach(function(hour) {
+  $(`#hour-${hour} .description`).val(localStorage.getItem(`hour-${hour}`))
+})
